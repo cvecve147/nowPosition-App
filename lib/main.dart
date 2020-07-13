@@ -176,8 +176,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    List topThreeDate = topThree(snapshot.data.toList());
-                    putRssi(topThreeDate);
+                    List<ScanResult> topThreeDate =
+                        topThree(snapshot.data.toList());
+                    if (topThreeDate.length > 0) {
+                      putRssi(topThreeDate);
+                    }
                     List point = calculationDist();
                     String position = "";
                     if (point.length > 0) {
