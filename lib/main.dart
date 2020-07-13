@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import './components/widgets.dart';
 import './components/canvas.dart';
 import 'dart:math';
 import './class/device.dart';
