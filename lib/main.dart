@@ -56,12 +56,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   calculationDist() {
+    int count=0;
     List<Device> point = List<Device>();
     for (var item in device) {
       if (item.rssi.length >= 5) {
+        count+=1;
+      }
+    }
+    for (var item in device) {
+      if (count >=3 && item.rssi.length >= 5) {
         int maxrssi = item.rssi.reduce(max); //負數最大
         int minrssi = item.rssi.reduce(min); //負數最小
-        int sum = item.rssi.reduce((a, b) => a.abs() + b.abs());
+        int sum = item.rssi.reduce((a, b) => a + b);
+        sum=sum.abs();
         double rssi = (sum + maxrssi + minrssi) / (item.rssi.length - 2);
         double power = (rssi - 60) / (10.0 * 3.3);
         item.DeviceClearRssi();
@@ -136,24 +143,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   putRssi(List<ScanResult> snapshot) {
-    for (var item in device) {
-      //如果超過10次沒收到 清空
-      item.notGetRssi += 1;
-      if (item.notGetRssi > 10) {
-        item.DeviceClearRssi();
-      }
-      for (var getrssi in snapshot) {
+    for(var item in device){
+        //如果超過10次沒收到 清空
+        item.notGetRssi += 1;
+        if (item.notGetRssi > 10) {
+          item.DeviceClearRssi();
+        }
+    }
+    for (var getrssi in snapshot) {
+      print(getrssi.rssi);
+      for (var item in device) {
         if (item.mac == getrssi.device.id.toString()) {
-          if (item.rssi.length <= 5) {
+          item.notGetRssi=0;
+          item.index += 1;
+          if (item.rssi.length < 5) {
             item.rssi.add(getrssi.rssi);
-            item.index += 1;
           } else {
-            if (item.index <= 5) {
+            if (item.index >= 5) {
               item.index = 0;
             }
-            item.rssi.replaceRange(item.index, item.index + 1, [getrssi.rssi]);
-            item.index += 1;
+            item.rssi.replaceRange(item.index, item.index+1, [getrssi.rssi]);
+            print("replace "+item.mac+" "+item.index.toString()+" "+(item.index+1).toString());
           }
+          break;
         }
       }
     }
@@ -175,14 +187,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
+                    print(snapshot.toString());
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
+                      
                     if (topThreeDate.length > 0) {
                       putRssi(topThreeDate);
                     }
                     List point = calculationDist();
                     String position = "";
-                    if (point.length > 0) {
+                    if (point.length >= 3) {
                       position = calculationPosition(point);
                     }
                     return Container(
@@ -193,6 +207,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             position,
                             style: TextStyle(fontSize: 18),
                           ),
+                          for(var item in device)
+                            if(item.rssi.length>0)
+                              Column(children: <Widget>[
+                                Text(item.mac),
+                                Text(item.rssi.join("、"))
+                              ],),
                           for (var item in topThreeDate)
                             Text(item.rssi.toString()),
                           canvasRoute()
@@ -219,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Icon(Icons.search),
                 onPressed: () async {
                   await FlutterBlue.instance.startScan(
-                      timeout: Duration(seconds: 999), allowDuplicates: true);
+                      timeout: Duration(seconds: 5),allowDuplicates:  false,scanMode:ScanMode.lowLatency);
                 });
           }
         },

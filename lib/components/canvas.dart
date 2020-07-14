@@ -68,8 +68,15 @@ class MyPainter extends CustomPainter {
     painter
       ..style = PaintingStyle.fill
       ..color = Colors.green;
+    int count=0;
     if (nowPosition.length > 0) {
       for (var item in nowPosition) {
+        count+=1;
+        if(count==nowPosition.length){
+          painter
+          ..style = PaintingStyle.fill
+          ..color = Colors.blue;
+        }
         canvas.drawCircle(
           Offset(item.x * 8.27, size.height - item.y * 7.7),
           5,
