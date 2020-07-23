@@ -10,25 +10,16 @@ List<Device> nowPosition = new List<Device>();
 List macList = List();
 void main() {
   runApp(MyApp());
-
-  macList.add("D4:6C:51:7D:F8:DB");
-  macList.add("FE:42:E1:2F:42:77");
-  macList.add("EB:A7:C6:6A:7C:CD");
-  macList.add("DC:F6:28:8B:95:8E");
-  macList.add("CC:E1:BF:9D:6B:9C");
-  macList.add("CA:8F:29:16:7F:4A");
-  Device temp = Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4);
-  device.add(temp);
-  temp = Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12);
-  device.add(temp);
-  temp = Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12);
-  device.add(temp);
-  temp = Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4);
-  device.add(temp);
-  temp = Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21);
-  device.add(temp);
-  temp = Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8);
-  device.add(temp);
+  device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
+  device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
+  device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
+  device.add(Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4));
+  device.add(Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21));
+  device.add(Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8));
+  device.add(Device(mac: "F8:94:1E:4E:31:D3", x: 34.65, y: 42));
+  for (var item in device) {
+    macList.add(item.mac);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -56,19 +47,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   calculationDist() {
-    int count=0;
+    int count = 0;
     List<Device> point = List<Device>();
     for (var item in device) {
       if (item.rssi.length >= 5) {
-        count+=1;
+        count += 1;
       }
     }
     for (var item in device) {
-      if (count >=3 && item.rssi.length >= 5) {
+      if (count >= 3 && item.rssi.length >= 5) {
         int maxrssi = item.rssi.reduce(max); //負數最大
         int minrssi = item.rssi.reduce(min); //負數最小
         int sum = item.rssi.reduce((a, b) => a + b);
-        sum=sum.abs();
+        sum = sum.abs();
         double rssi = (sum + maxrssi + minrssi) / (item.rssi.length - 2);
         double power = (rssi - 60) / (10.0 * 3.3);
         item.DeviceClearRssi();
@@ -143,18 +134,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   putRssi(List<ScanResult> snapshot) {
-    for(var item in device){
-        //如果超過10次沒收到 清空
-        item.notGetRssi += 1;
-        if (item.notGetRssi > 10) {
-          item.DeviceClearRssi();
-        }
+    for (var item in device) {
+      //如果超過10次沒收到 清空
+      item.notGetRssi += 1;
+      if (item.notGetRssi > 10) {
+        item.DeviceClearRssi();
+      }
     }
     for (var getrssi in snapshot) {
       print(getrssi.rssi);
       for (var item in device) {
         if (item.mac == getrssi.device.id.toString()) {
-          item.notGetRssi=0;
+          item.notGetRssi = 0;
           item.index += 1;
           if (item.rssi.length < 5) {
             item.rssi.add(getrssi.rssi);
@@ -162,8 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (item.index >= 5) {
               item.index = 0;
             }
-            item.rssi.replaceRange(item.index, item.index+1, [getrssi.rssi]);
-            print("replace "+item.mac+" "+item.index.toString()+" "+(item.index+1).toString());
+            item.rssi.replaceRange(item.index, item.index + 1, [getrssi.rssi]);
+            print("replace " +
+                item.mac +
+                " " +
+                item.index.toString() +
+                " " +
+                (item.index + 1).toString());
           }
           break;
         }
@@ -173,6 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String position = "";
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -190,15 +187,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     print(snapshot.toString());
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
-                      
+
                     if (topThreeDate.length > 0) {
                       putRssi(topThreeDate);
                     }
                     List point = calculationDist();
-                    String position = "";
+
                     if (point.length >= 3) {
                       position = calculationPosition(point);
+                    } else {
+                      position = "數量不足";
                     }
+                    position += "\n";
                     return Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -207,12 +207,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             position,
                             style: TextStyle(fontSize: 18),
                           ),
-                          for(var item in device)
-                            if(item.rssi.length>0)
-                              Column(children: <Widget>[
-                                Text(item.mac),
-                                Text(item.rssi.join("、"))
-                              ],),
+                          for (var item in device)
+                            if (item.rssi.length > 0)
+                              Column(
+                                children: <Widget>[
+                                  Text(item.mac),
+                                  Text(item.rssi.join("、"))
+                                ],
+                              ),
                           for (var item in topThreeDate)
                             Text(item.rssi.toString()),
                           canvasRoute()
@@ -239,7 +241,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Icon(Icons.search),
                 onPressed: () async {
                   await FlutterBlue.instance.startScan(
-                      timeout: Duration(seconds: 5),allowDuplicates:  false,scanMode:ScanMode.lowLatency);
+                      timeout: Duration(seconds: 999),
+                      allowDuplicates: false,
+                      scanMode: ScanMode.lowLatency);
                 });
           }
         },
