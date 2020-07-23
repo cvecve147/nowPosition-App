@@ -10,6 +10,9 @@ List<Device> nowPosition = new List<Device>();
 List macList = List();
 void main() {
   runApp(MyApp());
+
+  // device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 15));
+  // device.add(Device(mac: "30:45:11:39:07:20", x: 21, y: 15));
   device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
   device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
   device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
@@ -46,6 +49,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  calculationPreDist(double x, double y) {
+    if (nowPosition.length == 0) return 0.0;
+    double prePointX = nowPosition[nowPosition.length - 1].x;
+    double prePointY = nowPosition[nowPosition.length - 1].y;
+    double dist = sqrt(pow(prePointX - x, 2) + pow(prePointY - y, 2));
+    return dist;
+  }
+
   calculationDist() {
     int count = 0;
     List<Device> point = List<Device>();
@@ -108,8 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
     X /= 3;
     Y /= 3;
 
+    double dist = calculationPreDist(X, Y);
     nowPosition.add(Device(mac: "", x: X, y: Y));
-    return "${X} , ${Y}";
+    return "${X.toStringAsFixed(2)} , ${Y.toStringAsFixed(2)} 與上點距離為${dist.toStringAsFixed(2)}";
   }
 
   containsMac(List<ScanResult> snapshot, List macList) {
@@ -184,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    print(snapshot.toString());
+                    print(snapshot.data.toList().toString());
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
 

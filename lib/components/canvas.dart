@@ -84,6 +84,21 @@ class MyPainter extends CustomPainter {
           5,
           painter,
         );
+        final textStyle = ui.TextStyle(
+          color: Colors.red[400],
+          fontSize: 14,
+        );
+        final paragraphStyle = ui.ParagraphStyle(
+          textDirection: TextDirection.ltr,
+        );
+        final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
+          ..pushStyle(textStyle)
+          ..addText(count.toString());
+        final constraints = ui.ParagraphConstraints(width: 300);
+        final paragraph = paragraphBuilder.build();
+        paragraph.layout(constraints);
+        canvas.drawParagraph(
+            paragraph, Offset(item.x * 8.1, size.height - item.y * 8.0));
       }
     }
   }
