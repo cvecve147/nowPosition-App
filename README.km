@@ -1,0 +1,119 @@
+{
+    "root": {
+        "data": {
+            "id": "c4enn5j69c00",
+            "created": 1595573619207,
+            "text": "室內定位",
+            "color": "#000000",
+            "font-size": 24,
+            "progress": null
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "c4ennbldrq80",
+                    "created": 1595573632401,
+                    "text": "掃描藍芽",
+                    "color": "#000000",
+                    "font-size": 18
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c4eno92y4540",
+                            "created": 1595573705297,
+                            "text": "掃描時間",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4enocs46s80",
+                            "created": 1595573713350,
+                            "text": "掃描模式",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4enogo7bps0",
+                            "created": 1595573721821,
+                            "text": "掃描過濾反彈",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "c4ennnql0tc0",
+                    "created": 1595573658837,
+                    "text": "掃描藍芽資料",
+                    "color": "#000000",
+                    "font-size": 18
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "c4enomylf880",
+                            "created": 1595573735509,
+                            "text": "過濾是否為Tag",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4enx5te9pk0",
+                            "created": 1595574403467,
+                            "text": "抓取Tag 前三筆",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4enxc7144w0",
+                            "created": 1595574417353,
+                            "text": "計算是否此裝置超過5個Rssi",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4enxky0mp40",
+                            "created": 1595574436398,
+                            "text": "計算所有值相加減去最大最小值，並且計算距離(手機到tag的距離)",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "c4eny0s0j400",
+                            "created": 1595574470864,
+                            "text": "利用這些點位下去計算三角座標，並返回結果 ",
+                            "color": "#000000",
+                            "font-size": 16
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "template": "right",
+    "theme": "snow",
+    "version": "1.4.43"
+}
