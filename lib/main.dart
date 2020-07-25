@@ -10,7 +10,14 @@ List<Device> nowPosition = new List<Device>();
 List macList = List();
 void main() {
   runApp(MyApp());
+  // 加速 Use map
+  //   Map<String, List<int>> myMapList = Map();
 
+  // myMapList['listA'] = [1, 2, 3];
+  // myMapList['listB'] = [4, 5, 6];
+
+  // print(myMapList);
+  // {listA: [1, 2, 3], listB: [4, 5, 6]}
   // device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 15));
   // device.add(Device(mac: "30:45:11:39:07:20", x: 21, y: 15));
   device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
