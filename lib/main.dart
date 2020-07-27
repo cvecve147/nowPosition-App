@@ -256,6 +256,9 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.red,
             );
           } else {
+            //use Timer.periodic(new Duration(seconds: 1), (timer) {
+            //     debugPrint(timer.tick);
+            //   });
             return FloatingActionButton(
                 child: Icon(Icons.search),
                 onPressed: () async {
