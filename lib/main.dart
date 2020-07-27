@@ -3,6 +3,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import './components/canvas.dart';
 import 'dart:math';
 import './class/device.dart';
+import 'dart:async';
 
 List<Device> device = new List<Device>();
 List<Device> nowPosition = new List<Device>();
@@ -189,6 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     String position = "";
+    bool condition = false;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -199,6 +201,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              FloatingActionButton(
+                child: Icon(Icons.stop),
+                onPressed: () => condition = true,
+                backgroundColor: Colors.red,
+              ),
               StreamBuilder<List<ScanResult>>(
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
@@ -259,13 +266,21 @@ class _MyHomePageState extends State<MyHomePage> {
             //use Timer.periodic(new Duration(seconds: 1), (timer) {
             //     debugPrint(timer.tick);
             //   });
+
             return FloatingActionButton(
                 child: Icon(Icons.search),
                 onPressed: () async {
-                  await FlutterBlue.instance.startScan(
-                      timeout: Duration(seconds: 999),
-                      allowDuplicates: false,
-                      scanMode: ScanMode.lowLatency);
+                  Timer.periodic(new Duration(seconds: 3), (timer) async {
+                    //
+                    if (condition) {
+                      timer.cancel();
+                    }
+                    await FlutterBlue.instance.startScan(
+                        timeout: Duration(seconds: 1),
+                        allowDuplicates: false,
+                        scanMode: ScanMode.lowLatency);
+                    await FlutterBlue.instance.stopScan();
+                  });
                 });
           }
         },
