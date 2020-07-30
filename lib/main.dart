@@ -9,8 +9,10 @@ List<Device> device = new List<Device>();
 List<Device> nowPosition = new List<Device>();
 
 List macList = List();
+
 void main() {
   runApp(MyApp());
+  bool school = false;
   // 加速 Use map
   //   Map<String, List<int>> myMapList = Map();
 
@@ -19,15 +21,22 @@ void main() {
 
   // print(myMapList);
   // {listA: [1, 2, 3], listB: [4, 5, 6]}
-  device.add(Device(mac: "30:45:11:38:F8:4F", x: 16.5, y: 16));
-  device.add(Device(mac: "30:45:11:39:07:20", x: 17, y: 16));
-  device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
-  device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
-  device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
-  device.add(Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4));
-  device.add(Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21));
-  device.add(Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8));
-  device.add(Device(mac: "F8:94:1E:4E:31:D3", x: 34.65, y: 42));
+
+  if (school) {
+    device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
+    device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
+    device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
+    device.add(Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4));
+    device.add(Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21));
+    device.add(Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8));
+    device.add(Device(mac: "F8:94:1E:4E:31:D3", x: 34.65, y: 42));
+  } else {
+    device.add(Device(mac: "30:45:11:38:F8:4F", x: 14, y: 16));
+    device.add(Device(mac: "30:45:11:39:07:20", x: 19.2, y: 16));
+    device.add(Device(mac: "30:45:11:3F:A2:7D", x: 14, y: 25));
+    device.add(Device(mac: "30:45:11:38:72:E6", x: 19.2, y: 25));
+  }
+
   for (var item in device) {
     macList.add(item.mac);
   }
