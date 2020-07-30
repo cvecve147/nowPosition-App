@@ -19,8 +19,8 @@ void main() {
 
   // print(myMapList);
   // {listA: [1, 2, 3], listB: [4, 5, 6]}
-  // device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 15));
-  // device.add(Device(mac: "30:45:11:39:07:20", x: 21, y: 15));
+  device.add(Device(mac: "30:45:11:38:F8:4F", x: 16.5, y: 16));
+  device.add(Device(mac: "30:45:11:39:07:20", x: 17, y: 16));
   device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
   device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
   device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
@@ -154,9 +154,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   putRssi(List<ScanResult> snapshot) {
+    if (snapshot.length == 0) return;
     for (var item in device) {
       //如果超過10次沒收到 清空
       item.notGetRssi += 1;
+      print(item.notGetRssi);
       if (item.notGetRssi > 10) {
         item.DeviceClearRssi();
       }
@@ -190,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     String position = "";
-    bool condition = false;
+    bool condition = true;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -203,7 +205,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               FloatingActionButton(
                 child: Icon(Icons.stop),
-                onPressed: () => condition = true,
+                onPressed: () {
+                  setState(() {
+                    condition = true;
+                  });
+                },
                 backgroundColor: Colors.red,
               ),
               StreamBuilder<List<ScanResult>>(
@@ -229,6 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
+                          if (!condition) Text("開始掃描"),
                           Text(
                             position,
                             style: TextStyle(fontSize: 18),
@@ -270,17 +277,30 @@ class _MyHomePageState extends State<MyHomePage> {
             return FloatingActionButton(
                 child: Icon(Icons.search),
                 onPressed: () async {
-                  Timer.periodic(new Duration(seconds: 3), (timer) async {
-                    //
+                  condition = false;
+                  while (true) {
                     if (condition) {
-                      timer.cancel();
+                      // timer.cancel();
+                      break;
                     }
                     await FlutterBlue.instance.startScan(
-                        timeout: Duration(seconds: 1),
+                        timeout: Duration(seconds: 2),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
-                  });
+                  }
+                  // Timer.periodic(new Duration(milliseconds: 1600),
+                  //     (timer) async {
+                  //   //
+                  //   if (condition) {
+                  //     timer.cancel();
+                  //   }
+                  //   await FlutterBlue.instance.startScan(
+                  //       timeout: Duration(milliseconds: 1300),
+                  //       allowDuplicates: false,
+                  //       scanMode: ScanMode.lowLatency);
+                  //   await FlutterBlue.instance.stopScan();
+                  // });
                 });
           }
         },
