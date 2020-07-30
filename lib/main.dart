@@ -12,7 +12,6 @@ List macList = List();
 
 void main() {
   runApp(MyApp());
-  bool school = false;
   // 加速 Use map
   //   Map<String, List<int>> myMapList = Map();
 
@@ -22,24 +21,31 @@ void main() {
   // print(myMapList);
   // {listA: [1, 2, 3], listB: [4, 5, 6]}
 
-  if (school) {
-    device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
-    device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
-    device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
-    device.add(Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4));
-    device.add(Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21));
-    device.add(Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8));
-    device.add(Device(mac: "F8:94:1E:4E:31:D3", x: 34.65, y: 42));
-  } else {
-    device.add(Device(mac: "30:45:11:38:F8:4F", x: 14, y: 16));
-    device.add(Device(mac: "30:45:11:39:07:20", x: 19.2, y: 16));
-    device.add(Device(mac: "30:45:11:3F:A2:7D", x: 14, y: 25));
-    device.add(Device(mac: "30:45:11:38:72:E6", x: 19.2, y: 25));
-  }
+  devicePushLab();
+  pushMacList();
+}
 
+pushMacList() {
   for (var item in device) {
     macList.add(item.mac);
   }
+}
+
+devicePushSchool() {
+  device.add(Device(mac: "D4:6C:51:7D:F8:DB", x: 12, y: 14.4));
+  device.add(Device(mac: "FE:42:E1:2F:42:77", x: 24, y: 12));
+  device.add(Device(mac: "EB:A7:C6:6A:7C:CD", x: 36, y: 12));
+  device.add(Device(mac: "DC:F6:28:8B:95:8E", x: 45, y: 14.4));
+  device.add(Device(mac: "CC:E1:BF:9D:6B:9C", x: 31.95, y: 21));
+  device.add(Device(mac: "CA:8F:29:16:7F:4A", x: 37.2, y: 31.8));
+  device.add(Device(mac: "F8:94:1E:4E:31:D3", x: 34.65, y: 42));
+}
+
+devicePushLab() {
+  device.add(Device(mac: "30:45:11:38:F8:4F", x: 14, y: 16));
+  device.add(Device(mac: "30:45:11:39:07:20", x: 19.2, y: 16));
+  device.add(Device(mac: "30:45:11:3F:A2:7D", x: 14, y: 25));
+  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.2, y: 25));
 }
 
 class MyApp extends StatelessWidget {
@@ -198,13 +204,41 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  bool school = false;
+
   @override
   Widget build(BuildContext context) {
     String position = "";
     bool condition = true;
+    String title = "";
+    if (school)
+      title = widget.title + " School";
+    else
+      title = widget.title + " Lab";
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
+        actions: <Widget>[
+          Switch(
+            activeColor: Colors.lightGreenAccent,
+            onChanged: ((value) => {
+                  if (condition)
+                    setState(() {
+                      school = value;
+                      device.clear();
+                      macList.clear();
+                      print("Switch");
+                      if (school) {
+                        devicePushSchool();
+                      } else {
+                        devicePushLab();
+                      }
+                      pushMacList();
+                    })
+                }),
+            value: school,
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () =>
@@ -212,15 +246,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              FloatingActionButton(
-                child: Icon(Icons.stop),
-                onPressed: () {
-                  setState(() {
-                    condition = true;
-                  });
-                },
-                backgroundColor: Colors.red,
-              ),
               StreamBuilder<List<ScanResult>>(
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
@@ -275,21 +300,21 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.data) {
             return FloatingActionButton(
               child: Icon(Icons.stop),
-              onPressed: () => FlutterBlue.instance.stopScan(),
+              onPressed: () async {
+                setState(() async {
+                  condition = true;
+                  await FlutterBlue.instance.stopScan();
+                });
+              },
               backgroundColor: Colors.red,
             );
           } else {
-            //use Timer.periodic(new Duration(seconds: 1), (timer) {
-            //     debugPrint(timer.tick);
-            //   });
-
             return FloatingActionButton(
                 child: Icon(Icons.search),
                 onPressed: () async {
                   condition = false;
                   while (true) {
                     if (condition) {
-                      // timer.cancel();
                       break;
                     }
                     await FlutterBlue.instance.startScan(
@@ -298,18 +323,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
                   }
-                  // Timer.periodic(new Duration(milliseconds: 1600),
-                  //     (timer) async {
-                  //   //
-                  //   if (condition) {
-                  //     timer.cancel();
-                  //   }
-                  //   await FlutterBlue.instance.startScan(
-                  //       timeout: Duration(milliseconds: 1300),
-                  //       allowDuplicates: false,
-                  //       scanMode: ScanMode.lowLatency);
-                  //   await FlutterBlue.instance.stopScan();
-                  // });
                 });
           }
         },
