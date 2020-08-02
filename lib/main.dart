@@ -208,7 +208,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool school = false;
-
+  int count = 0;
+  int lastIsNull = 0;
   @override
   Widget build(BuildContext context) {
     String position = "";
@@ -253,7 +254,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    print(snapshot.data.toList().toString());
+                    // print(snapshot.data.toList().toString());
+                    if (snapshot.data.toList().length <= 0) {
+                      print("No find");
+                      lastIsNull++;
+                      if (lastIsNull > 1) {
+                        if (lastIsNull == 2) {
+                          count += lastIsNull;
+                        } else {
+                          count++;
+                        }
+                      }
+                    } else {
+                      lastIsNull = 0;
+                    }
+                    print(count);
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
 
@@ -315,13 +330,19 @@ class _MyHomePageState extends State<MyHomePage> {
             return FloatingActionButton(
                 child: Icon(Icons.search),
                 onPressed: () async {
+                  lastIsNull = 0;
+                  count = 0;
                   condition = false;
+                  Timer.periodic(new Duration(minutes: 5), (timer) {
+                    condition = true;
+                    print("五分鐘未收到藍芽次數" + count.toString());
+                  });
                   while (true) {
                     if (condition) {
                       break;
                     }
                     await FlutterBlue.instance.startScan(
-                        timeout: Duration(seconds: 2),
+                        timeout: Duration(seconds: 6),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
