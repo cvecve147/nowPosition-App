@@ -46,6 +46,9 @@ devicePushLab() {
   device.add(Device(mac: "30:45:11:39:07:20", x: 19.2, y: 16));
   device.add(Device(mac: "30:45:11:3F:A2:7D", x: 14, y: 25));
   device.add(Device(mac: "30:45:11:38:72:E6", x: 19.2, y: 25));
+  // device.add(Device(mac: "30:45:11:38:72:E6", x: 14 / 3, y: 40 - 0.5));
+  // device.add(Device(mac: "30:45:11:3E:2A:D1", x: 21 / 3, y: 40 - 4.0));
+  // device.add(Device(mac: "30:45:11:3C:64:7E", x: 4 / 3, y: 40 - 0.2));
 }
 
 class MyApp extends StatelessWidget {
