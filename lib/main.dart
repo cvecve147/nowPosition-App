@@ -125,12 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
               (point[j].x - point[i].x) *
                   point[i].distance /
                   (point[i].distance + point[j].distance);
-          //x = x0+ (x1 - x0)*r0/(r0 + r1);
+          //x = x0 + (x1 - x0) * r0 / (r0 + r1);
           Y += point[i].y +
               (point[j].y - point[i].y) *
                   point[i].distance /
                   (point[i].distance + point[j].distance);
-          //y = y0+ (y1- y0)*r0/(r0 + r1);
+          //y = y0 + (y1 - y0) * r0 / (r0 + r1);
         } else {
           //相交则套用公式（上面推导出的）
           //(BE) =(AB) /2+((BQ) ^2-(AQ) ^2)/(2(AB)  )
@@ -268,7 +268,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     } else {
                       lastIsNull = 0;
                     }
-                    print(count);
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
 
@@ -333,16 +332,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   lastIsNull = 0;
                   count = 0;
                   condition = false;
-                  Timer.periodic(new Duration(minutes: 5), (timer) {
-                    condition = true;
-                    print("五分鐘未收到藍芽次數" + count.toString());
-                  });
+                  int countSeach = 0;
                   while (true) {
-                    if (condition) {
+                    if (condition || countSeach == 60) {
+                      print("60次掃描漏抓次數：" + count.toString());
                       break;
                     }
+                    countSeach++;
+                    print(countSeach);
                     await FlutterBlue.instance.startScan(
-                        timeout: Duration(seconds: 6),
+                        timeout: Duration(seconds: 5),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
