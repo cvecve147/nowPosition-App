@@ -42,10 +42,10 @@ devicePushSchool() {
 }
 
 devicePushLab() {
-  device.add(Device(mac: "30:45:11:38:F8:4F", x: 14, y: 16));
-  device.add(Device(mac: "30:45:11:39:07:20", x: 19.2, y: 16));
-  device.add(Device(mac: "30:45:11:3F:A2:7D", x: 14, y: 25));
-  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.2, y: 25));
+  device.add(Device(mac: "30:45:11:3C:64:7E", x: 14, y: 16));
+  device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 17));
+  device.add(Device(mac: "30:45:11:3E:2A:D1", x: 14.75, y: 24.5));
+  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.5, y: 24));
   // device.add(Device(mac: "30:45:11:38:72:E6", x: 14 / 3, y: 40 - 0.5));
   // device.add(Device(mac: "30:45:11:3E:2A:D1", x: 21 / 3, y: 40 - 4.0));
   // device.add(Device(mac: "30:45:11:3C:64:7E", x: 6 / 3, y: 40 - 0.2));
@@ -91,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         count += 1;
       }
     }
+
     for (var item in device) {
       if (count >= 3 && item.rssi.length >= 5) {
         int maxrssi = item.rssi.reduce(max); //負數最大
@@ -103,6 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
         item.distance = pow(10, power);
         point.add(item);
       }
+    }
+    if (point.length > 0) {
+      point.sort((a, b) {
+        return a.distance > b.distance ? -1 : 1;
+      });
     }
     return point;
   }
@@ -144,7 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     X /= 3;
     Y /= 3;
-
     double dist = calculationPreDist(X, Y);
     nowPosition.add(Device(mac: "", x: X, y: Y));
     return "${X.toStringAsFixed(2)} , ${Y.toStringAsFixed(2)} 與上點距離為${dist.toStringAsFixed(2)}";
@@ -176,8 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
     for (var item in device) {
       //如果超過10次沒收到 清空
       item.notGetRssi += 1;
-      print(item.notGetRssi);
-      if (item.notGetRssi > 10) {
+      if (item.notGetRssi > 7) {
         item.DeviceClearRssi();
       }
     }
