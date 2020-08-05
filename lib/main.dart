@@ -45,7 +45,8 @@ devicePushLab() {
   device.add(Device(mac: "30:45:11:3C:64:7E", x: 14, y: 16));
   device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 17));
   device.add(Device(mac: "30:45:11:3E:2A:D1", x: 14.75, y: 24.5));
-  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.5, y: 24));
+  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.5, y: 24.5));
+  device.add(Device(mac: "30:45:11:3F:4E:54", x: 16.75, y: 19.7));
   // device.add(Device(mac: "30:45:11:38:72:E6", x: 14 / 3, y: 40 - 0.5));
   // device.add(Device(mac: "30:45:11:3E:2A:D1", x: 21 / 3, y: 40 - 4.0));
   // device.add(Device(mac: "30:45:11:3C:64:7E", x: 6 / 3, y: 40 - 0.2));
