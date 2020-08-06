@@ -99,6 +99,22 @@ class MyPainter extends CustomPainter {
         4,
         painter,
       );
+      final textStyle = ui.TextStyle(
+        color: Colors.white,
+        fontSize: 6,
+      );
+      final paragraphStyle = ui.ParagraphStyle(
+        textDirection: TextDirection.ltr,
+      );
+      final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
+        ..pushStyle(textStyle)
+        ..addText(item.mac.toString().substring(
+            item.mac.toString().length - 2, item.mac.toString().length));
+      final constraints = ui.ParagraphConstraints(width: 300);
+      final paragraph = paragraphBuilder.build();
+      paragraph.layout(constraints);
+      canvas.drawParagraph(
+          paragraph, Offset(item.x * 8.0, size.height - item.y * 7.9));
     }
   }
 

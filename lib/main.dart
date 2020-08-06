@@ -42,11 +42,11 @@ devicePushSchool() {
 }
 
 devicePushLab() {
-  device.add(Device(mac: "30:45:11:3C:64:7E", x: 14, y: 16));
-  device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 17));
-  device.add(Device(mac: "30:45:11:3E:2A:D1", x: 14.75, y: 24.5));
-  device.add(Device(mac: "30:45:11:38:72:E6", x: 19.5, y: 24.5));
-  device.add(Device(mac: "30:45:11:3F:4E:54", x: 16.75, y: 19.7));
+  device.add(Device(mac: "30:45:11:3E:91:6F", x: 12.5, y: 16));
+  device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 16));
+  device.add(Device(mac: "30:45:11:38:72:E6", x: 12.8, y: 24.5));
+  device.add(Device(mac: "30:45:11:3F:4E:54", x: 19.75, y: 24.5));
+  device.add(Device(mac: "30:45:11:3E:08:63", x: 16.5, y: 19.7));
   // device.add(Device(mac: "30:45:11:38:72:E6", x: 14 / 3, y: 40 - 0.5));
   // device.add(Device(mac: "30:45:11:3E:2A:D1", x: 21 / 3, y: 40 - 4.0));
   // device.add(Device(mac: "30:45:11:3C:64:7E", x: 6 / 3, y: 40 - 0.2));
@@ -88,12 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
     int count = 0;
     List<Device> point = List<Device>();
     for (var item in device) {
-      if (item.rssi.length >= 3) {
+      if (item.rssi.length >= 5) {
         count += 1;
       }
     }
     for (var item in device) {
-      if (count >= 3 && item.rssi.length >= 3) {
+      if (count >= 3 && item.rssi.length >= 5) {
         int maxrssi = item.rssi.reduce(max); //負數最大
         int minrssi = item.rssi.reduce(min); //負數最小
         int sum = item.rssi.reduce((a, b) => a + b);
@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
     for (var item in device) {
       //如果超過10次沒收到 清空
       item.notGetRssi += 1;
-      if (item.notGetRssi > 3) {
+      if (item.notGetRssi > 1) {
         item.DeviceClearRssi();
       }
     }
