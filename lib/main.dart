@@ -88,13 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
     int count = 0;
     List<Device> point = List<Device>();
     for (var item in device) {
-      if (item.rssi.length >= 5) {
+      if (item.rssi.length >= 3) {
         count += 1;
       }
     }
-
     for (var item in device) {
-      if (count >= 3 && item.rssi.length >= 5) {
+      if (count >= 3 && item.rssi.length >= 3) {
         int maxrssi = item.rssi.reduce(max); //負數最大
         int minrssi = item.rssi.reduce(min); //負數最小
         int sum = item.rssi.reduce((a, b) => a + b);
@@ -168,9 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   topThree(List<ScanResult> snapshot) {
     snapshot = containsMac(snapshot, macList);
+
     snapshot.sort((a, b) {
       return a.rssi > b.rssi ? -1 : 1;
     });
+    for (var item in snapshot) {
+      print("${item.device.id} ${item.rssi}");
+    }
     if (snapshot.length >= 3) {
       return snapshot.sublist(0, 3);
     }
@@ -182,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
     for (var item in device) {
       //如果超過10次沒收到 清空
       item.notGetRssi += 1;
-      if (item.notGetRssi > 7) {
+      if (item.notGetRssi > 3) {
         item.DeviceClearRssi();
       }
     }

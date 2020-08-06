@@ -55,17 +55,6 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     painter = Paint();
     canvas.drawImage(image, Offset(0.0, 0.0), painter);
-    painter
-      ..style = PaintingStyle.fill
-      ..color = Colors.red;
-    for (var item in device) {
-      canvas.drawCircle(
-        Offset(item.x * 8.27, size.height - item.y * 7.7),
-        5,
-        painter,
-      );
-    }
-
     int count = 0;
     if (nowPosition.length > 0) {
       for (var item in nowPosition) {
@@ -73,7 +62,7 @@ class MyPainter extends CustomPainter {
         if (count == nowPosition.length) {
           painter
             ..style = PaintingStyle.fill
-            ..color = Colors.blue;
+            ..color = Colors.yellow;
         } else {
           painter
             ..style = PaintingStyle.fill
@@ -81,25 +70,35 @@ class MyPainter extends CustomPainter {
         }
         canvas.drawCircle(
           Offset(item.x * 8.27, size.height - item.y * 7.7),
-          5,
+          3,
           painter,
         );
-        final textStyle = ui.TextStyle(
-          color: Colors.red[400],
-          fontSize: 14,
-        );
-        final paragraphStyle = ui.ParagraphStyle(
-          textDirection: TextDirection.ltr,
-        );
-        final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
-          ..pushStyle(textStyle)
-          ..addText(count.toString());
-        final constraints = ui.ParagraphConstraints(width: 300);
-        final paragraph = paragraphBuilder.build();
-        paragraph.layout(constraints);
-        canvas.drawParagraph(
-            paragraph, Offset(item.x * 8.1, size.height - item.y * 8.0));
+        // final textStyle = ui.TextStyle(
+        //   color: Colors.red[400],
+        //   fontSize: 12,
+        // );
+        // final paragraphStyle = ui.ParagraphStyle(
+        //   textDirection: TextDirection.ltr,
+        // );
+        // final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
+        //   ..pushStyle(textStyle)
+        //   ..addText(count.toString());
+        // final constraints = ui.ParagraphConstraints(width: 300);
+        // final paragraph = paragraphBuilder.build();
+        // paragraph.layout(constraints);
+        // canvas.drawParagraph(
+        //     paragraph, Offset(item.x * 8.1, size.height - item.y * 8.0));
       }
+    }
+    painter
+      ..style = PaintingStyle.fill
+      ..color = Colors.red;
+    for (var item in device) {
+      canvas.drawCircle(
+        Offset(item.x * 8.27, size.height - item.y * 7.7),
+        4,
+        painter,
+      );
     }
   }
 
