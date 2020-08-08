@@ -3,12 +3,14 @@ import 'package:flutter_blue/flutter_blue.dart';
 import './components/canvas.dart';
 import 'dart:math';
 import './class/device.dart';
-import 'dart:async';
 
 List<Device> device = new List<Device>();
 List<Device> nowPosition = new List<Device>();
 
 List macList = List();
+// 初始化所有Tag 值
+// 取消多輸入的情形
+// 若取修多輸入 需修改定位過濾功能
 
 void main() {
   runApp(MyApp());
