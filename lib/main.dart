@@ -3,6 +3,7 @@ import 'package:flutter_blue/flutter_blue.dart';
 import './components/canvas.dart';
 import 'dart:math';
 import './class/device.dart';
+import './searchTag.dart';
 
 List<Device> device = new List<Device>();
 List<Device> nowPosition = new List<Device>();
@@ -46,9 +47,11 @@ devicePushSchool() {
 devicePushLab() {
   device.add(Device(mac: "30:45:11:3E:91:6F", x: 12.5, y: 16));
   device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 16));
-  device.add(Device(mac: "30:45:11:38:72:E6", x: 12.8, y: 24.5));
+  device.add(
+      Device(mac: "30:45:11:3C:64:7E", x: 12.8, y: 24.5)); //"30:45:11:38:72:E6"
   device.add(Device(mac: "30:45:11:3F:4E:54", x: 19.75, y: 24.5));
   device.add(Device(mac: "30:45:11:3E:08:63", x: 16.5, y: 19.7));
+  // device.add(Device(mac: "30:45:11:3C:64:7E", x: 14 / 3, y: 40 - 0.5));
   // device.add(Device(mac: "30:45:11:38:72:E6", x: 14 / 3, y: 40 - 0.5));
   // device.add(Device(mac: "30:45:11:3E:2A:D1", x: 21 / 3, y: 40 - 4.0));
   // device.add(Device(mac: "30:45:11:3C:64:7E", x: 6 / 3, y: 40 - 0.2));
@@ -218,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool school = false;
+  int times = 0;
   @override
   Widget build(BuildContext context) {
     String position = "";
@@ -250,6 +254,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
             value: school,
           ),
+          RaisedButton(
+            color: Colors.blue,
+            child: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SecondRoute()),
+              );
+            },
+          )
         ],
       ),
       body: RefreshIndicator(
@@ -262,13 +279,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    // print(snapshot.data.toList().toString());
+                    print(snapshot.data.toList().toString());
                     List<ScanResult> topThreeDate =
                         topThree(snapshot.data.toList());
-
-                    if (topThreeDate.length > 0) {
+                    if (topThreeDate.length > 0 && times == 2) {
                       putRssi(topThreeDate);
                     }
+                    times++;
+
                     List point = calculationDist();
 
                     if (point.length >= 3) {
@@ -329,6 +347,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (condition) {
                       break;
                     }
+                    times = 0;
                     await FlutterBlue.instance.startScan(
                         timeout: Duration(seconds: 6),
                         allowDuplicates: false,
