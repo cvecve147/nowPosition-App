@@ -11,7 +11,7 @@ List macList = List();
 // 初始化所有Tag 值
 // 取消多輸入的情形
 // 若取修多輸入 需修改定位過濾功能
-
+int needRssiCount = 5;
 void main() {
   runApp(MyApp());
   // 加速 Use map
@@ -90,12 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
     int count = 0;
     List<Device> point = List<Device>();
     for (var item in device) {
-      if (item.rssi.length >= 5) {
+      if (item.rssi.length >= needRssiCount) {
         count += 1;
       }
     }
     for (var item in device) {
-      if (count >= 3 && item.rssi.length >= 5) {
+      if (count >= 3 && item.rssi.length >= needRssiCount) {
         int maxrssi = item.rssi.reduce(max); //負數最大
         int minrssi = item.rssi.reduce(min); //負數最小
         int sum = item.rssi.reduce((a, b) => a + b);
