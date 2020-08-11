@@ -47,8 +47,7 @@ devicePushSchool() {
 devicePushLab() {
   device.add(Device(mac: "30:45:11:3E:91:6F", x: 12.5, y: 16));
   device.add(Device(mac: "30:45:11:38:F8:4F", x: 19.5, y: 16));
-  device.add(
-      Device(mac: "30:45:11:3C:64:7E", x: 12.8, y: 24.5)); //"30:45:11:38:72:E6"
+  device.add(Device(mac: "30:45:11:38:72:E6", x: 12.8, y: 24.5));
   device.add(Device(mac: "30:45:11:3F:4E:54", x: 19.75, y: 24.5));
   device.add(Device(mac: "30:45:11:3E:08:63", x: 16.5, y: 19.7));
   // device.add(Device(mac: "30:45:11:3C:64:7E", x: 14 / 3, y: 40 - 0.5));
