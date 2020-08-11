@@ -190,12 +190,12 @@ class _MyHomePageState extends State<MyHomePage> {
     for (var item in device) {
       //如果超過10次沒收到 清空
       item.notGetRssi += 1;
-      if (item.notGetRssi > 1) {
+      if (item.notGetRssi > 3) {
         item.DeviceClearRssi();
       }
     }
     for (var getrssi in snapshot) {
-      print(getrssi.rssi);
+      print("${getrssi.device.id}:${getrssi.rssi}");
       for (var item in device) {
         if (item.mac == getrssi.device.id.toString()) {
           item.notGetRssi = 0;
@@ -221,7 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool school = false;
-  int times = 0;
+  Set<ScanResult> collectScanResult = new Set();
+  List<ScanResult> topThreeDate = new List();
   @override
   Widget build(BuildContext context) {
     String position = "";
@@ -279,22 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    print(snapshot.data.toList().toString());
-                    List<ScanResult> topThreeDate =
-                        topThree(snapshot.data.toList());
-                    if (topThreeDate.length > 0 && times == 2) {
-                      putRssi(topThreeDate);
-                    }
-                    times++;
-
-                    List point = calculationDist();
-
-                    if (point.length >= 3) {
-                      position = calculationPosition(point);
-                    } else {
-                      position = "數量不足";
-                    }
-                    position += "\n";
+                    snapshot.data.map((e) => collectScanResult.add(e)).toList();
                     return Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -347,12 +333,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (condition) {
                       break;
                     }
-                    times = 0;
+                    collectScanResult.clear();
                     await FlutterBlue.instance.startScan(
                         timeout: Duration(seconds: 6),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
+                    topThreeDate = topThree(collectScanResult.toList());
+                    if (topThreeDate.length > 0) {
+                      putRssi(topThreeDate);
+                    }
+                    List point = calculationDist();
+                    if (point.length >= 3) {
+                      position = calculationPosition(point);
+                    } else {
+                      position = "此次收集數量不足";
+                    }
+                    position += "\n";
                   }
                 });
           }
