@@ -1,25 +1,64 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import '../main.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image/image.dart';
+import '../pages/position.dart';
 import 'dart:ui' as ui;
 
 class canvasRoute extends StatefulWidget {
+  String imageUrl = "";
+  canvasRoute(this.imageUrl);
+
   @override
   _canvasRouteState createState() => _canvasRouteState();
 }
 
 class _canvasRouteState extends State<canvasRoute> {
   ui.Image images;
+  static Future<ui.Image> loadImageByProvider(ImageProvider provider) async {
+    ImageConfiguration config = ImageConfiguration(size: Size(400, 400));
+
+    Completer<ui.Image> completer = Completer<ui.Image>(); //完成的回调
+    ImageStreamListener listener;
+    ImageStream stream = provider.resolve(config); //获取图片流
+    listener = ImageStreamListener((ImageInfo frame, bool sync) {
+//监听
+
+      ui.Image image = frame.image;
+      completer.complete(image); //完成
+      stream.removeListener(listener); //移除监听
+    });
+    stream.addListener(listener); //添加监听
+    return completer.future; //返回
+  }
+
+  Completer<ImageInfo> completer = Completer();
+  Future<ui.Image> getImage(String path) async {
+    var img = new NetworkImage(path);
+
+    img
+        .resolve(ImageConfiguration(size: Size(400, 400)))
+        .addListener(ImageStreamListener((ImageInfo info, bool _) {
+      completer.complete(info);
+    }));
+    ImageInfo imageInfo = await completer.future;
+
+    return imageInfo.image;
+  }
+
   @override
   void initState() {
     super.initState();
+    print(widget.imageUrl);
     (() async {
       if (this.images == null) {
-        loadUiImage('image/7F.png', 400, 400).then((img) {
-          images = img;
-          setState(() {});
-        });
+        images = await getImage(widget.imageUrl);
+
+        setState(() {});
       }
     })();
   }
@@ -54,7 +93,13 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     painter = Paint();
-    canvas.drawImage(image, Offset(0.0, 0.0), painter);
+    canvas.drawImageRect(
+        image,
+        Offset(0.0, 0.0) &
+            Size(image.width.toDouble(), image.height.toDouble()),
+        Offset(0.0, 0.0) & Size(400, 400),
+        painter);
+    // canvas.drawImage(image, Offset(0.0, 0.0), painter);
     int count = 0;
     if (nowPosition.length > 0) {
       for (var item in nowPosition) {
@@ -100,8 +145,8 @@ class MyPainter extends CustomPainter {
         painter,
       );
       final textStyle = ui.TextStyle(
-        color: Colors.white,
-        fontSize: 6,
+        color: Colors.blue,
+        fontSize: 14,
       );
       final paragraphStyle = ui.ParagraphStyle(
         textDirection: TextDirection.ltr,
@@ -113,8 +158,8 @@ class MyPainter extends CustomPainter {
       final constraints = ui.ParagraphConstraints(width: 300);
       final paragraph = paragraphBuilder.build();
       paragraph.layout(constraints);
-      canvas.drawParagraph(
-          paragraph, Offset(item.x * 8.0, size.height - item.y * 7.9));
+      canvas.drawParagraph(paragraph,
+          Offset(item.x * 8.27 - 9, size.height - item.y * 7.7 - 15));
     }
   }
 

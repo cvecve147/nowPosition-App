@@ -4,9 +4,10 @@ class Device {
   final double y;
   double distance;
   List<int> rssi; //抓取五個
+  int rssiDef;
   int index; //抓取到哪裡了
   int notGetRssi; //抓不到超過5次以上 清空
-  Device({this.mac, this.x, this.y}) {
+  Device({this.mac, this.x, this.y, this.rssiDef}) {
     this.notGetRssi = 0;
     this.index = 0;
     this.distance = 0;
@@ -16,7 +17,7 @@ class Device {
   @override
   String toString() {
     // TODO: implement toString
-    return 'Device{mac: $mac, x: $x, y: $y}';
+    return 'Device{mac: $mac, x: $x, y: $y,Def: $rssiDef}';
   }
 
   DeviceClearRssi() {
