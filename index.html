@@ -21,10 +21,11 @@
     <div id="app">
       <div class="container">
         <div class="row">
-          <div class="form-group" v-for="(item,index) in TagData[0]">
+          <div class="form-group col" v-for="(item,index) in TagData[0]">
             <div v-if="index!='updatedAt' && index!='_id'">
               <label for="">{{index}}</label>
               <input
+                v-if="index!='isTag' && index!='position'"
                 type="text"
                 class="form-control"
                 :name="index"
@@ -32,6 +33,21 @@
                 placeholder=""
                 v-model="input[index]"
               />
+              <select
+                class="form-control"
+                v-if="index=='isTag'"
+                v-model="input[index]"
+              >
+                <option>true</option>
+                <option>false</option>
+              </select>
+              <select
+                class="form-control"
+                v-if="index=='position'"
+                v-model="input[index]"
+              >
+                <option v-for="item in Position">{{item.position}}</option>
+              </select>
             </div>
           </div>
           <button class="btn btn-primary" @click="add">
@@ -79,7 +95,10 @@
         data() {
           return {
             TagData: [],
-            input: {},
+            input: {
+              rssi: "60",
+            },
+            Position: [],
           }
         },
         methods: {
@@ -97,9 +116,13 @@
             )
             this.fecth()
           },
+          async fecthPosition() {
+            const res = await axios.get("http://120.105.161.209:3000/position")
+            this.Position = res.data.data
+          },
           async fecth() {
             const res = await axios.get(
-              "http://120.105.161.209:3000/position-tags"
+              "http://120.105.161.209:3000/position-tags?query=%7B%22limit%22%3A100%7D"
             )
             this.TagData = res.data.data
             this.TagData.forEach((el) => {
@@ -110,6 +133,7 @@
         },
         async created() {
           this.fecth()
+          this.fecthPosition()
         },
       })
     </script>
