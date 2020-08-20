@@ -179,6 +179,7 @@ class _PositionState extends State<Position> {
     this.position = "loading";
     var dio = Dio();
     device.clear();
+    nowPosition.clear();
     Response response = await dio.get(
         'http://120.105.161.209:3000/position-tags?query=%7B%22where%22%3A%7B%22position%22%3A%22${widget.position}%22%7D%7D');
     for (var item in response.data["data"]) {

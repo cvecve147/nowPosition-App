@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image/image.dart';
 import '../pages/position.dart';
 import 'dart:ui' as ui;
 
