@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import '../components/canvas.dart';
@@ -228,6 +230,8 @@ class _PositionState extends State<Position> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
+                    print(snapshot.data.toList().toString());
+                    print(snapshot.data.toList().length);
                     snapshot.data.map((e) => collectScanResult.add(e)).toList();
                     return Container(
                       child: Column(
