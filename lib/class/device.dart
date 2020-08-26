@@ -1,17 +1,17 @@
+import 'dart:collection';
+
 class Device {
   final String mac;
   final double x;
   final double y;
   double distance;
-  List<int> rssi; //抓取五個
+  Queue<int> rssi; //抓取五個
   int rssiDef;
-  int index; //抓取到哪裡了
   int notGetRssi; //抓不到超過5次以上 清空
   Device({this.mac, this.x, this.y, this.rssiDef}) {
     this.notGetRssi = 0;
-    this.index = 0;
     this.distance = 0;
-    this.rssi = List<int>();
+    this.rssi = Queue<int>();
   }
 
   @override
@@ -24,6 +24,5 @@ class Device {
     this.distance = 0;
     this.notGetRssi = 0;
     this.rssi.clear();
-    this.index = 0;
   }
 }

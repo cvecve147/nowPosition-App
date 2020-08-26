@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -50,13 +51,15 @@ class _PositionState extends State<Position> {
     }
     for (var item in device) {
       if (count >= 3 && item.rssi.length >= needRssiCount) {
-        int maxrssi = item.rssi.reduce(max); //負數最大
-        int minrssi = item.rssi.reduce(min); //負數最小
+        List<int> tmp = item.rssi.toList();
+        tmp = tmp.sublist(0, 5); //不過濾最後一個
+        int maxrssi = tmp.reduce(max); //負數最大
+        int minrssi = tmp.reduce(min); //負數最小
+
         int sum = item.rssi.reduce((a, b) => a + b);
         sum = sum.abs();
         double rssi = (sum + maxrssi + minrssi) / (item.rssi.length - 2);
         double power = (rssi - item.rssiDef) / (10.0 * 3.3);
-        item.DeviceClearRssi();
         item.distance = pow(10, power);
         point.add(item);
       }
@@ -150,14 +153,11 @@ class _PositionState extends State<Position> {
       for (var item in device) {
         if (item.mac == getrssi.device.id.toString()) {
           item.notGetRssi = 0;
-          item.index += 1;
           if (item.rssi.length < 5) {
             item.rssi.add(getrssi.rssi);
           } else {
-            if (item.index >= 5) {
-              item.index = 0;
-            }
-            item.rssi.replaceRange(item.index, item.index + 1, [getrssi.rssi]);
+            item.rssi.removeFirst();
+            item.rssi.add(getrssi.rssi);
           }
           break;
         }
@@ -287,7 +287,7 @@ class _PositionState extends State<Position> {
                     }
                     collectScanResult.clear();
                     await FlutterBlue.instance.startScan(
-                        timeout: Duration(seconds: 2),
+                        timeout: Duration(seconds: 6),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
