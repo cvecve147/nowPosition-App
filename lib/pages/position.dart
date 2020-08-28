@@ -294,7 +294,7 @@ class _PositionState extends State<Position> {
                     }
                     collectScanResult.clear();
                     await FlutterBlue.instance.startScan(
-                        timeout: Duration(seconds: 6),
+                        timeout: Duration(seconds: 2),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
                     await FlutterBlue.instance.stopScan();
