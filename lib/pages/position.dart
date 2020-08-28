@@ -230,8 +230,15 @@ class _PositionState extends State<Position> {
                   stream: FlutterBlue.instance.scanResults,
                   initialData: [],
                   builder: (c, snapshot) {
-                    print(snapshot.data.toList().toString());
+                    String res = "";
+                    // print(snapshot.data.toList().toString());
                     print(snapshot.data.toList().length);
+                    for (var item in snapshot.data) {
+                      res += item.device.id.toString() + " rssi:";
+                      res += item.rssi.toString() + ",";
+                    }
+                    print(res);
+
                     snapshot.data.map((e) => collectScanResult.add(e)).toList();
                     return Container(
                       child: Column(
