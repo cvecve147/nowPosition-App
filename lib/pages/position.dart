@@ -3,6 +3,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:nowPosition/SQLite/employee_model.dart';
+import 'package:nowPosition/SQLite/sqlhelper.dart';
 import '../components/canvas.dart';
 import 'dart:math';
 import '../class/device.dart';
@@ -288,6 +290,9 @@ class _PositionState extends State<Position> {
                 child: Icon(Icons.search),
                 onPressed: () async {
                   condition = false;
+                  SQLhelper sqLhelper = new SQLhelper();
+                  print("Employee");
+                  print(await sqLhelper.showEmployee());
                   while (true) {
                     if (condition) {
                       break;
