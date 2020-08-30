@@ -1,10 +1,8 @@
-import 'dart:async';
-import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-import 'package:nowPosition/SQLite/employee_model.dart';
-import 'package:nowPosition/SQLite/sqlhelper.dart';
+import 'package:nowPosition/class/acceptRssi.dart';
 import '../components/canvas.dart';
 import 'dart:math';
 import '../class/device.dart';
@@ -241,7 +239,7 @@ class _PositionState extends State<Position> {
                     }
                     print(res);
 
-                    snapshot.data.map((e) => collectScanResult.add(e)).toList();
+                    // snapshot.data.map((e) => collectScanResult.add(e)).toList();
                     return Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -290,19 +288,45 @@ class _PositionState extends State<Position> {
                 child: Icon(Icons.search),
                 onPressed: () async {
                   condition = false;
-                  SQLhelper sqLhelper = new SQLhelper();
-                  print("Employee");
-                  print(await sqLhelper.showEmployee());
                   while (true) {
                     if (condition) {
                       break;
                     }
                     collectScanResult.clear();
+
                     await FlutterBlue.instance.startScan(
                         timeout: Duration(seconds: 2),
                         allowDuplicates: false,
                         scanMode: ScanMode.lowLatency);
+                    var subscription =
+                        FlutterBlue.instance.scanResults.listen((results) {
+                      // do something with scan results
+                      for (var item in results) {
+                        collectScanResult.add(item);
+                      }
+                    });
                     await FlutterBlue.instance.stopScan();
+                    print(collectScanResult.toString());
+                    if (collectScanResult.length > 0) {
+                      List<AcceptRssi> res = List<AcceptRssi>();
+                      res.clear();
+                      for (var item in collectScanResult) {
+                        res.add(
+                            AcceptRssi(item.device.id.toString(), item.rssi));
+                      }
+                      String encode = jsonEncode(res);
+                      List<dynamic> decode = jsonDecode(encode);
+                      List<AcceptRssi> de = List<AcceptRssi>();
+                      for (var item in decode) {
+                        de.add(AcceptRssi.fromJson(item));
+                      }
+                      for (var item in de) {
+                        print("Decode:Mac" +
+                            item.mac +
+                            " Rssi:" +
+                            item.rssi.toString());
+                      }
+                    }
                     topThreeDate = topThree(collectScanResult.toList());
                     if (topThreeDate.length > 0) {
                       putRssi(topThreeDate);
